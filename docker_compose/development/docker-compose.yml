@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+
+  usage-analytics-consumers:
+    image: registry.gitlab.com/icarus-dev/usage-analytics/consumers-module:dev
+    ports: 
+    - "8090:8090"
+    logging:
+      options:
+        max-size: "2MB"
+        max-file: "10"
+  
+  usage-analytics-api:
+    image: registry.gitlab.com/icarus-dev/usage-analytics/api-module:dev
+    ports: 
+    - "8095:8095"
+    logging:
+      options:
+        max-size: "2MB"
+        max-file: "10"

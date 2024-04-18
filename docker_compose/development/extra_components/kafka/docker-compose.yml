@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+    - "2181:2181"
+    networks: 
+      - icarus
+    logging:
+      options:
+        max-size: "2MB"
+        max-file: "10"
+ 
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+    - "9093:9093"
+    networks: 
+      icarus:
+         ipv4_address: 172.190.0.201
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://localhost:9093 # local
+      # KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://10.22.0.16:9093 # ICARUS Server
+      KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+    depends_on:
+      - zookeeper
+    logging:
+      options:
+        max-size: "2MB"
+        max-file: "10"
+
+networks: 
+  icarus:
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.190.0.0/16

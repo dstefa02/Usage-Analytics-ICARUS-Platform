@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  
+  icarus-db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ucy
+      POSTGRES_PASSWORD: iHtqmAbBD8dXd8bp5gHqEMjaT
+      POSTGRES_DB: icarus
+    ports:
+      - 5432:5432
+    volumes:
+      # - postgres:/var/lib/postgresql/data
+      - "/home/cs10419/Desktop/ICARUS Development/Usage Analytics/postgre-data:/data/db"
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - postgres
+
+  pg-admin:
+    image: dpage/pgadmin4
+    restart: always
+    ports:
+      - 65375:80
+    depends_on:
+      - icarus-db
+    environment:
+      PGADMIN_DEFAULT_EMAIL: dstefa02@cs.ucy.ac.cy
+      PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    networks:
+      - postgres
+  
+networks:
+  postgres:
+    driver: bridge
+
+volumes:
+  postgres:
+  pgadmin:
